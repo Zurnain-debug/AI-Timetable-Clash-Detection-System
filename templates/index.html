@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timetable Clash Detector - AI Powered</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            margin-bottom: 30px;
+        }
+
+        .upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 15px;
+            padding: 60px 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: #f8f9ff;
+        }
+
+        .upload-area:hover {
+            border-color: #764ba2;
+            background: #f0f2ff;
+            transform: translateY(-5px);
+        }
+
+        .upload-area.dragover {
+            border-color: #764ba2;
+            background: #e8ebff;
+        }
+
+        .upload-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .upload-text {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #e4e6eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .selected-file {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .selected-file.show {
+            display: block;
+        }
+
+        .results-area {
+            display: none;
+        }
+
+        .results-area.show {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .stat-card.success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .stat-card.warning {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .stat-card.info {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-value {
+            font-size: 3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+
+        .clash-list {
+            margin-top: 30px;
+        }
+
+        .clash-item {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .clash-item.resolved {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+
+        .clash-type {
+            font-weight: 600;
+            color: #ff9800;
+            margin-bottom: 8px;
+        }
+
+        .clash-item.resolved .clash-type {
+            color: #4caf50;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-rate {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+
+        .success-rate-value {
+            font-size: 4em;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .resolution-log {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .log-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .log-item.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .log-item.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .download-section {
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>⚡ Automatic Clash Detection and Resolution System for Timetables</h1>
+            <p>Upload your timetable and let AI automatically detect & resolve clashes</p>
+        </div>
+
+        <!-- Upload Card -->
+        <div class="card">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">Drop your CSV or Excel file here</div>
+                <div class="upload-hint">or click to browse (Max 16MB)</div>
+                <input type="file" id="fileInput" class="file-input" accept=".csv,.xlsx,.xls">
+            </div>
+
+            <div class="selected-file" id="selectedFile">
+                <strong>Selected file:</strong> <span id="fileName"></span>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="btn btn-primary" id="processBtn" disabled>🚀 Process Timetable</button>
+                <button class="btn btn-secondary" id="sampleBtn">📥 Download Sample Template</button>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <h2>Processing your timetable...</h2>
+            <p>AI is detecting and resolving clashes</p>
+        </div>
+
+        <!-- Results Card -->
+        <div class="card results-area" id="resultsArea">
+            <h2 style="text-align: center; margin-bottom: 30px;">📊 Analysis Results</h2>
+
+            <!-- Statistics -->
+            <div class="stats-grid">
+                <div class="stat-card info">
+                    <div class="stat-label">Total Sessions</div>
+                    <div class="stat-value" id="totalSessions">0</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-label">Clashes Found</div>
+                    <div class="stat-value" id="clashesFound">0</div>
+                </div>
+                <div class="stat-card success">
+                    <div class="stat-label">Resolved</div>
+                    <div class="stat-value" id="clashesResolved">0</div>
+                </div>
+                <div class="stat-card warning">
+                    <div class="stat-label">Unresolved</div>
+                    <div class="stat-value" id="clashesUnresolved">0</div>
+                </div>
+            </div>
+
+            <!-- Success Rate -->
+            <div class="success-rate" id="successRate" style="display: none;">
+                <h3>Success Rate</h3>
+                <div class="success-rate-value" id="successRateValue">0%</div>
+                <p id="successRateText">Clashes resolved automatically</p>
+            </div>
+
+            <!-- Clash Details -->
+            <div id="clashDetails" style="margin-top: 30px;">
+                <h3>📋 Clash Summary</h3>
+                <div id="clashSummary"></div>
+            </div>
+
+            <!-- Resolution Log -->
+            <div id="resolutionLogSection" style="display: none;">
+                <h3 style="margin-top: 30px;">🔄 Resolution Log</h3>
+                <div class="resolution-log" id="resolutionLog"></div>
+            </div>
+
+            <!-- Download Section -->
+            <div class="download-section">
+                <button class="btn btn-primary" id="downloadBtn" style="display: none;">
+                    ⬇️ Download Resolved Timetable
+                </button>
+                <button class="btn btn-secondary" id="newFileBtn">📤 Process Another File</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const selectedFile = document.getElementById('selectedFile');
+        const fileName = document.getElementById('fileName');
+        const processBtn = document.getElementById('processBtn');
+        const sampleBtn = document.getElementById('sampleBtn');
+        const loading = document.getElementById('loading');
+        const resultsArea = document.getElementById('resultsArea');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const newFileBtn = document.getElementById('newFileBtn');
+
+        let currentFile = null;
+        let outputFileName = null;
+
+        // Upload area click
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        // File selection
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            const validTypes = ['text/csv', 'application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+            
+            if (!validTypes.includes(file.type) && !file.name.match(/\.(csv|xlsx|xls)$/i)) {
+                alert('Please upload a CSV or Excel file');
+                return;
+            }
+
+            currentFile = file;
+            fileName.textContent = file.name;
+            selectedFile.classList.add('show');
+            processBtn.disabled = false;
+        }
+
+        // Process button
+        processBtn.addEventListener('click', async () => {
+            if (!currentFile) return;
+
+            const formData = new FormData();
+            formData.append('file', currentFile);
+
+            // Show loading
+            loading.classList.add('show');
+            resultsArea.classList.remove('show');
+            processBtn.disabled = true;
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    displayResults(result);
+                    outputFileName = result.output_file;
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error processing file: ' + error.message);
+            } finally {
+                loading.classList.remove('show');
+                processBtn.disabled = false;
+            }
+        });
+
+        function displayResults(result) {
+            const { results } = result;
+
+            // Display statistics
+            document.getElementById('totalSessions').textContent = results.load.session_count || 0;
+            document.getElementById('clashesFound').textContent = results.detect.total_clashes || 0;
+            
+            const resolved = results.resolve.report?.resolved || 0;
+            const unresolved = results.resolve.report?.unresolved || 0;
+            const total = results.detect.total_clashes || 0;
+
+            document.getElementById('clashesResolved').textContent = resolved;
+            document.getElementById('clashesUnresolved').textContent = unresolved;
+
+            // Calculate success rate
+            if (total > 0) {
+                const successRate = Math.round((resolved / total) * 100);
+                document.getElementById('successRateValue').textContent = successRate + '%';
+                document.getElementById('successRateText').textContent = 
+                    `${resolved} out of ${total} clashes resolved automatically`;
+                document.getElementById('successRate').style.display = 'block';
+            }
+
+            // Display clash summary
+            const clashSummary = document.getElementById('clashSummary');
+            const summary = results.detect.clash_summary || {};
+            let summaryHtml = '<div class="stats-grid" style="margin-top: 20px;">';
+            
+            for (const [type, count] of Object.entries(summary)) {
+                if (count > 0) {
+                    summaryHtml += `
+                        <div class="stat-card warning">
+                            <div class="stat-label">${type.replace(/_/g, ' ')}</div>
+                            <div class="stat-value">${count}</div>
+                        </div>
+                    `;
+                }
+            }
+            summaryHtml += '</div>';
+            clashSummary.innerHTML = summaryHtml;
+
+            // Display resolution log
+            const logSection = document.getElementById('resolutionLogSection');
+            const logDiv = document.getElementById('resolutionLog');
+            const logs = results.resolve.report?.resolution_log || [];
+            
+            if (logs.length > 0) {
+                logSection.style.display = 'block';
+                let logHtml = '';
+                logs.forEach(log => {
+                    const isSuccess = log.startsWith('✓');
+                    logHtml += `
+                        <div class="log-item ${isSuccess ? 'success' : 'error'}">
+                            <span style="font-size: 1.2em;">${isSuccess ? '✓' : '✗'}</span>
+                            <span>${log.substring(2)}</span>
+                        </div>
+                    `;
+                });
+                logDiv.innerHTML = logHtml;
+            }
+
+            // Show results and download button
+            resultsArea.classList.add('show');
+            downloadBtn.style.display = 'inline-block';
+        }
+
+        // Download button
+        downloadBtn.addEventListener('click', () => {
+            if (outputFileName) {
+                window.location.href = `/download/${outputFileName}`;
+            }
+        });
+
+        // Sample button
+        sampleBtn.addEventListener('click', () => {
+            window.location.href = '/sample';
+        });
+
+        // New file button
+        newFileBtn.addEventListener('click', () => {
+            currentFile = null;
+            fileInput.value = '';
+            selectedFile.classList.remove('show');
+            resultsArea.classList.remove('show');
+            processBtn.disabled = true;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+Session ID,Course Name,Course Code,Teacher,Room,Student Group,Day,Start Time,End Time
+S0001,Data Structures,CS301,Dr. Smith,101,CS-2024,Tuesday,08:00,09:30
+S0002,Algorithms,CS302,Dr. Smith,102,CS-2023,Monday,11:00,12:30
+S0003,Database Systems,CS303,Dr. Johnson,101,CS-2024,Monday,09:30,11:00
+S0004,Web Development,CS304,Dr. Lee,101,CS-2023,Monday,13:00,14:30
+S0005,Operating Systems,CS305,Dr. Brown,103,CS-2024,Monday,08:00,09:30
+S0006,Computer Networks,CS306,Dr. Davis,104,CS-2024,Wednesday,11:00,12:30
+S0007,Artificial Intelligence,CS401,Dr. Wilson,105,CS-2022,Monday,08:00,09:30
+S0008,Machine Learning,CS402,Dr. Wilson,106,CS-2021,Monday,09:30,11:00
+S0009,Software Engineering,CS307,Dr. Taylor,107,CS-2023,Thursday,11:00,12:30
+S0010,Compiler Design,CS308,Dr. Martinez,108,CS-2023,Friday,09:00,10:30
+S0011,Computer Graphics,CS309,Dr. Anderson,101,CS-2024,Monday,11:00,12:30
+S0012,Digital Logic Design,CS201,Dr. Thomas,109,CS-2025,Monday,14:00,15:30
+S0013,Microprocessors,CS202,Dr. Jackson,110,CS-2025,Tuesday,09:00,10:30
+S0014,Data Communication,CS310,Dr. White,111,CS-2023,Tuesday,11:00,12:30
+S0015,Information Security,CS311,Dr. Harris,112,CS-2022,Wednesday,09:00,10:30
+S0016,Cloud Computing,CS403,Dr. Martin,113,CS-2021,Wednesday,14:00,15:30
+S0017,Mobile App Development,CS312,Dr. Thompson,114,CS-2023,Thursday,14:00,15:30
+S0018,Internet of Things,CS404,Dr. Garcia,115,CS-2022,Thursday,16:00,17:30
+S0019,Blockchain Technology,CS405,Dr. Rodriguez,116,CS-2021,Friday,11:00,12:30
+S0020,Quantum Computing,CS406,Dr. Lewis,117,CS-2021,Friday,14:00,15:30
+S0021,Discrete Mathematics,MATH201,Dr. Walker,201,CS-2024,Monday,14:00,15:30
+S0022,Linear Algebra,MATH202,Dr. Hall,202,CS-2023,Monday,16:00,17:30
+S0023,Probability Theory,MATH203,Dr. Allen,203,CS-2024,Tuesday,16:00,17:30
+S0024,Calculus I,MATH101,Dr. Young,204,CS-2025,Wednesday,09:00,10:30
+S0025,Statistics,MATH301,Dr. King,205,CS-2023,Wednesday,14:00,15:30
+S0026,Physics I,PHY101,Dr. Wright,301,CS-2025,Thursday,11:00,12:30
+S0027,Physics II,PHY102,Dr. Lopez,302,CS-2024,Thursday,14:00,15:30
+S0028,Digital Electronics,EE201,Dr. Hill,303,CS-2025,Friday,09:00,10:30
+S0029,Communication Skills,ENG101,Prof. Scott,401,CS-2025,Friday,11:00,12:30
+S0030,Technical Writing,ENG201,Prof. Green,402,CS-2024,Friday,14:00,15:30
+S0031,Computer Architecture,CS203,Dr. Adams,118,CS-2024,Monday,16:00,17:30
+S0032,Distributed Systems,CS313,Dr. Baker,119,CS-2023,Tuesday,16:00,17:30
+S0033,Human Computer Interaction,CS314,Dr. Nelson,120,CS-2022,Wednesday,16:00,17:30
+S0034,Parallel Processing,CS407,Dr. Carter,121,CS-2021,Thursday,09:00,10:30
+S0035,Natural Language Processing,CS408,Dr. Mitchell,122,CS-2021,Monday,11:00,12:30
+S0036,Computer Vision,CS409,Dr. Perez,123,CS-2022,Tuesday,09:00,10:30
+S0037,Robotics,CS410,Dr. Roberts,124,CS-2022,Tuesday,11:00,12:30
+S0038,Game Development,CS315,Dr. Turner,125,CS-2023,Wednesday,16:00,17:30
+S0039,Virtual Reality,CS411,Dr. Phillips,126,CS-2021,Thursday,11:00,12:30
+S0040,Augmented Reality,CS412,Dr. Campbell,127,CS-2021,Thursday,14:00,15:30
+S0041,Data Mining,CS316,Dr. Parker,128,CS-2023,Friday,14:00,15:30
+S0042,Big Data Analytics,CS413,Dr. Evans,129,CS-2022,Friday,16:00,17:30
+S0043,Cyber Security,CS317,Dr. Edwards,130,CS-2023,Monday,09:00,10:30
+S0044,Ethical Hacking,CS414,Dr. Collins,131,CS-2022,Monday,14:00,15:30
+S0045,Network Security,CS318,Dr. Stewart,132,CS-2023,Tuesday,14:00,15:30
